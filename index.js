@@ -44,7 +44,7 @@ app.get('/api/monitors/:topic_id', (req, res) => {
 });
 
 app.post('/api/monitors', (req, res) => {
-    const { sender, topic } = req.body;
+    const { sender, topic, frequency,is_fix,verification_number,verification_time} = req.body;
     
     if (!sender || !topic) {
         return res.status(400).json({
