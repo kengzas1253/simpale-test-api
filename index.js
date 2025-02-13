@@ -41,26 +41,6 @@ let items = [
     }
 ];
 
-// Validation helper
-const validateMonitorData = (data) => {
-    const errors = [];
-    
-    if (!data.topic_id) errors.push('topic_id is required');
-    if (!data.transaction_datetime) errors.push('transaction_datetime is required');
-    
-    // Additional validations
-    if (data.is_fix && !['Y', 'N'].includes(data.is_fix)) {
-        errors.push('is_fix must be "Y" or "N"');
-    }
-    
-    if (data.weekday_param && 
-        !['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].includes(data.weekday_param)) {
-        errors.push('Invalid weekday_param');
-    }
-    
-    return errors;
-};
-
 // Routes
 // GET - Get all monitors
 app.get('/api/monitors', (req, res) => {
@@ -126,12 +106,10 @@ app.post('/api/monitors', (req, res) => {
             is_fix
         } = req.body;
         
-        // Validate input
-        const validationErrors = validateMonitorData(req.body);
-        if (validationErrors.length > 0) {
+        if (!topic_id) {
             return res.status(400).json({
                 success: false,
-                errors: validationErrors
+                error: 'topic_id is required'
             });
         }
         
@@ -184,6 +162,4 @@ app.listen(PORT, '0.0.0.0', () => {
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (error) => {
     console.error('Unhandled Rejection:', error);
-    // Don't exit the process in production, just log the error
-    // process.exit(1);
 });
